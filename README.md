@@ -50,3 +50,105 @@
 ---
 
 ## 📁 Project Structure
+```
+NimbusCast/
+├── index.html      # App structure — sidebar, tabs, cards, search
+├── style.css       # Full design system — tokens, layout, components
+└── script.js       # All logic — API, rendering, analytics, storage
+```
+
+---
+
+## 🚀 Getting Started (Local Setup)
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/PitendraKumarsahoo/NimbusCast.git
+cd NimbusCast
+```
+
+### 2. Open in browser
+No build step needed. Simply open `index.html` in any browser:
+```bash
+# Double-click index.html
+# OR use VS Code Live Server extension
+```
+
+### 3. API Key (already included)
+The project uses [WeatherAPI.com](https://www.weatherapi.com/). A working API key is already embedded in `script.js`. To use your own:
+1. Register free at weatherapi.com
+2. Copy your key
+3. In `script.js` replace line 4:
+```js
+const API_KEY = "YOUR_API_KEY_HERE";
+```
+
+---
+
+## 🌐 Deployment (Vercel)
+
+This project is deployed on **Vercel** with zero configuration.
+
+To deploy your own copy:
+1. Fork this repository
+2. Go to [vercel.com](https://vercel.com) → New Project → Import your fork
+3. Framework: **Other** | Build command: *(leave blank)* | Output: *(leave blank)*
+4. Click Deploy ✅
+
+---
+
+## 📊 App Sections
+
+### 🌐 Dashboard
+Main view showing current temperature, weather icon, condition, and 6 key stats (feels like, humidity, wind, UV, visibility, pressure). Also includes sunrise/sunset, precipitation, cloud cover, and AQI.
+
+### 📅 7-Day Forecast
+Card grid showing each day's high/low temperature, weather icon, condition text, and rain probability percentage.
+
+### 🕐 Hourly Breakdown
+Horizontal scroll of 24 hourly cards with temperature, rain %, and wind speed. Current hour is highlighted.
+
+### 📊 Analytics
+- **Comfort Index** — Heat index calculated from temp + humidity
+- **Wind Conditions** — Categorized from Calm to Dangerous
+- **UV Index** — With protection recommendations
+- **7-Day Temp Trend** — Visual bar chart
+
+### 🤖 Smart Insights
+6+ dynamically generated weather tips based on live conditions.
+
+### 📌 Saved Cities
+Save multiple cities. Click any saved card to instantly load its weather.
+
+---
+
+## 🧠 Key Concepts Used
+
+- Fetch API with async/await pattern
+- DOM manipulation and dynamic HTML rendering
+- CSS custom properties (design tokens)
+- CSS Grid and Flexbox for responsive layouts
+- localStorage for client-side persistence
+- Geolocation Web API
+- Heat Index formula (Steadman approximation)
+- EPA Air Quality Index mapping
+
+---
+
+## 👨‍💻 Developer
+
+**Pitendra Kumar Sahoo**
+B.Tech Computer Science & Engineering — GIET University, Gunupur, Odisha
+Roll No: 23CSE357
+
+[![GitHub](https://img.shields.io/badge/GitHub-PitendraKumarsahoo-181717?style=flat-square&logo=github)](https://github.com/PitendraKumarsahoo)
+
+---
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+> Built with 💙 using HTML, CSS & JavaScript | Powered by WeatherAPI.com
