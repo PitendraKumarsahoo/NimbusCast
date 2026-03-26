@@ -8,7 +8,7 @@
 
 > A professional, real-time weather intelligence web application with 7-day forecasts, hourly breakdown, air quality index, smart insights, and a fully responsive dark/light UI.
 
-🔗 **Live Demo:** [nimbus-cast.vercel.app](https://nimbus-cast.vercel.app)
+🔗 **Live Demo:** [nimbus-cast.vercel.app](https://nimbuscast-weather.vercel.app/)
 
 ---
 
