@@ -1,19 +1,246 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <title>Weather App</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>NimbusCast — Smart Weather Intelligence</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="weather-container">
-    <h2>🌦 Weather App</h2>
+<!-- Animated Background -->
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
 
-    <input type="text" id="locationInput" placeholder="Enter city name">
-    <button onclick="getWeather()">Get Weather</button>
+<div class="app-wrapper">
 
-    <div id="weatherResult" class="result"></div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">⛈</span>
+      <span class="logo-text">NimbusCast</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-btn active" data-tab="dashboard" onclick="switchTab('dashboard', this)">
+        <span class="nav-icon">🌐</span><span>Dashboard</span>
+      </button>
+      <button class="nav-btn" data-tab="forecast" onclick="switchTab('forecast', this)">
+        <span class="nav-icon">📅</span><span>7-Day Forecast</span>
+      </button>
+      <button class="nav-btn" data-tab="hourly" onclick="switchTab('hourly', this)">
+        <span class="nav-icon">🕐</span><span>Hourly</span>
+      </button>
+      <button class="nav-btn" data-tab="analytics" onclick="switchTab('analytics', this)">
+        <span class="nav-icon">📊</span><span>Analytics</span>
+      </button>
+      <button class="nav-btn" data-tab="saved" onclick="switchTab('saved', this)">
+        <span class="nav-icon">📌</span><span>Saved Cities</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">
+        <span id="themeIcon">☀️</span> Light Mode
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <button class="hamburger" onclick="toggleSidebar()">☰</button>
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="cityInput" placeholder="Search any city worldwide..." onkeydown="if(event.key==='Enter') getWeather()">
+        <button class="search-btn" onclick="getWeather()">Search</button>
+        <button class="loc-btn" onclick="getLocation()" title="Use My Location">📍</button>
+      </div>
+      <div class="topbar-right">
+        <span id="lastUpdated" class="last-update"></span>
+        <button class="refresh-btn" onclick="refreshWeather()" title="Refresh">🔄</button>
+      </div>
+    </div>
+
+    <!-- ERROR BANNER -->
+    <div id="errorBanner" class="error-banner hidden">
+      <span id="errorMsg">⚠️ City not found. Please try again.</span>
+      <button onclick="closeError()">✕</button>
+    </div>
+
+    <!-- LOADING OVERLAY -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+      <div class="loader-ring"></div>
+      <p>Fetching weather data...</p>
+    </div>
+
+    <!-- ===== TABS ===== -->
+
+    <!-- DASHBOARD TAB -->
+    <div class="tab-content active" id="tab-dashboard">
+
+      <!-- HERO WEATHER CARD -->
+      <div id="heroCard" class="hero-card hidden">
+        <div class="hero-left">
+          <div class="hero-location">
+            <span id="heroCity" class="city-name">—</span>
+            <span id="heroCountry" class="country-name">—</span>
+          </div>
+          <div class="hero-temp-row">
+            <img id="heroIcon" src="" alt="" class="hero-icon">
+            <span id="heroTemp" class="hero-temp">—</span>
+            <span class="hero-unit">°C</span>
+          </div>
+          <p id="heroCondition" class="hero-condition">—</p>
+          <p id="heroDateTime" class="hero-datetime">—</p>
+        </div>
+        <div class="hero-right">
+          <div class="stat-chip">
+            <span class="stat-label">Feels Like</span>
+            <span id="heroFeels" class="stat-val">—</span>
+          </div>
+          <div class="stat-chip">
+            <span class="stat-label">Humidity</span>
+            <span id="heroHumidity" class="stat-val">—</span>
+          </div>
+          <div class="stat-chip">
+            <span class="stat-label">Wind</span>
+            <span id="heroWind" class="stat-val">—</span>
+          </div>
+          <div class="stat-chip">
+            <span class="stat-label">UV Index</span>
+            <span id="heroUV" class="stat-val">—</span>
+          </div>
+          <div class="stat-chip">
+            <span class="stat-label">Visibility</span>
+            <span id="heroVis" class="stat-val">—</span>
+          </div>
+          <div class="stat-chip">
+            <span class="stat-label">Pressure</span>
+            <span id="heroPressure" class="stat-val">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMPTY STATE -->
+      <div id="emptyState" class="empty-state">
+        <div class="empty-icon">🌍</div>
+        <h2>Search Any City</h2>
+        <p>Enter a city name or use your GPS location to get live weather, 7-day forecasts, hourly breakdown, and smart analytics.</p>
+        <div class="quick-cities">
+          <span>Try:</span>
+          <button onclick="getWeather('Mumbai')">Mumbai</button>
+          <button onclick="getWeather('Delhi')">Delhi</button>
+          <button onclick="getWeather('London')">London</button>
+          <button onclick="getWeather('New York')">New York</button>
+          <button onclick="getWeather('Tokyo')">Tokyo</button>
+        </div>
+      </div>
+
+      <!-- METRICS GRID -->
+      <div id="metricsGrid" class="metrics-grid hidden">
+        <div class="metric-card" id="metSunrise">
+          <div class="metric-icon">🌅</div>
+          <div class="metric-info">
+            <span class="metric-label">Sunrise</span>
+            <span id="mSunrise" class="metric-val">—</span>
+          </div>
+        </div>
+        <div class="metric-card" id="metSunset">
+          <div class="metric-icon">🌇</div>
+          <div class="metric-info">
+            <span class="metric-label">Sunset</span>
+            <span id="mSunset" class="metric-val">—</span>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">🌧</div>
+          <div class="metric-info">
+            <span class="metric-label">Precipitation</span>
+            <span id="mPrecip" class="metric-val">—</span>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">☁️</div>
+          <div class="metric-info">
+            <span class="metric-label">Cloud Cover</span>
+            <span id="mCloud" class="metric-val">—</span>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">💨</div>
+          <div class="metric-info">
+            <span class="metric-label">Wind Dir.</span>
+            <span id="mWindDir" class="metric-val">—</span>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">🌊</div>
+          <div class="metric-info">
+            <span class="metric-label">Dew Point</span>
+            <span id="mDew" class="metric-val">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AQI STRIP -->
+      <div id="aqiStrip" class="aqi-strip hidden">
+        <span class="aqi-label">Air Quality Index</span>
+        <div class="aqi-bar-wrapper">
+          <div class="aqi-bar-track">
+            <div class="aqi-bar-fill" id="aqiBarFill"></div>
+          </div>
+          <span id="aqiVal" class="aqi-value">—</span>
+        </div>
+        <span id="aqiText" class="aqi-text">—</span>
+      </div>
+
+    </div>
+
+    <!-- FORECAST TAB -->
+    <div class="tab-content" id="tab-forecast">
+      <h2 class="section-title">7-Day Forecast</h2>
+      <div id="forecastGrid" class="forecast-grid">
+        <div class="placeholder-msg">Search a city to view forecast.</div>
+      </div>
+    </div>
+
+    <!-- HOURLY TAB -->
+    <div class="tab-content" id="tab-hourly">
+      <h2 class="section-title">24-Hour Breakdown</h2>
+      <div id="hourlyScroll" class="hourly-scroll">
+        <div class="placeholder-msg">Search a city to view hourly data.</div>
+      </div>
+    </div>
+
+    <!-- ANALYTICS TAB -->
+    <div class="tab-content" id="tab-analytics">
+      <h2 class="section-title">Weather Analytics</h2>
+      <div id="analyticsPanel" class="analytics-panel">
+        <div class="placeholder-msg">Search a city to view analytics.</div>
+      </div>
+    </div>
+
+    <!-- SAVED CITIES TAB -->
+    <div class="tab-content" id="tab-saved">
+      <div class="saved-header">
+        <h2 class="section-title">Saved Cities</h2>
+        <button class="save-current-btn" onclick="saveCurrentCity()">+ Save Current City</button>
+      </div>
+      <div id="savedCitiesGrid" class="saved-grid">
+        <div class="placeholder-msg">No saved cities yet.</div>
+      </div>
+    </div>
+
+  </main>
 </div>
 
 <script src="script.js"></script>
